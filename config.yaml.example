@@ -1,0 +1,44 @@
+scylla:
+  web:
+    ip: 0.0.0.0
+    port: 39100
+    cors:
+      fallback_origin: https://scylla.yourcompany.com
+      allowed_origins:
+        - https://scylla.yourcompany.com
+    session:
+      secret: FnOqaJaRsV9xKyoAACwGFnOqaJaRsV9xKyoAACwGFnOqaJaRsV9xKyoAACwGFnOqaJaRsV9xKyoAACwG
+      encryption_salt: "TODO: cookie store encryption salt"
+      signing_salt: "TODO: cookie store signing salt"
+    api_keys:
+      - CHANGE_ME
+  db:
+    url: postgres://postgres:postgres@scylla-db-prod:5432/scylla
+  ldap:
+    server: ldap.yourcompany.com
+    port: 389
+    ssl: false
+    user_dn: CN=binduser,CN=Users,DC=yourcompany,DC=com
+    password: binduserpwd
+    base:
+      users: CN=Users,DC=yourcompany,DC=com
+      groups: CN=Users,DC=yourcompany,DC=com
+    attr:
+      #class: objectClass
+      #class_value_user: person
+      #class_value_group: group
+      user_id: sAMAccountName
+      #user_name: cn
+      #user_email: mail
+      #user_office: o
+      #group_name: cn
+      #group_members: member
+  jobs:
+    resend_saved_events:
+      schedule: "*/15"
+      extended: true
+  clickhouse:
+    table: analytics_events
+    save_events_directory: /tmp/scylla
+    transient_error_codes:
+      - 516

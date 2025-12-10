@@ -1,0 +1,83 @@
+services:
+  # Postgres database
+  scylla-db:
+    image: postgres:17
+    container_name: scylla-db-prod
+    pull_policy: always
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_DB: scylla
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    networks:
+      - scylla
+
+  # ClickHouse database
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: scylla-clickhouse
+    # pull_policy: always
+    ports:
+      - 8123:8123  # HTTP interface
+      - 9000:9000  # Native protocol
+      - 9009:9009  # Interserver HTTP API
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - clickhouse_log:/var/log/clickhouse-server
+    environment:
+      - CLICKHOUSE_DB=default
+      - CLICKHOUSE_USER=admin
+      - CLICKHOUSE_PASSWORD=password
+      - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    user: 101:101
+    networks:
+      - scylla
+
+  # Elixir backend
+  scylla-backend:
+    image: scylla-backend:latest
+    container_name: scylla-backend-prod
+#    pull_policy: always
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - ./scylla_data:/tmp/scylla
+    depends_on:
+      scylla-db:
+        condition: service_healthy
+    networks:
+      - scylla
+
+  # Angular frontend
+  scylla-frontend:
+    image: scylla-frontend:latest
+    container_name: scylla-frontend-prod
+#    pull_policy: always
+    restart: unless-stopped
+    networks:
+      - scylla
+
+networks:
+  scylla:
+    external: true
+
+volumes:
+  clickhouse_data:
+    driver: local
+  clickhouse_log:
+    driver: local

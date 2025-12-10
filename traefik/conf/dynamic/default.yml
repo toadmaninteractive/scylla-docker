@@ -1,0 +1,4 @@
+http:
+  serversTransports:
+    passthru:
+      insecureSkipVerify: true

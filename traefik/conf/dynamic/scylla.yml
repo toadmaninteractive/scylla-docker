@@ -1,0 +1,24 @@
+http:
+  routers:
+    scylla-backend:
+      rule: Host(`scylla.yourcompany.com`) && PathRegexp(`^/(auth|manage|ingest)/`)
+      service: scylla-backend
+      tls: true
+
+    scylla-frontend:
+      rule: Host(`scylla.yourcompany.com`)
+      tls: true
+      service: scylla-frontend
+
+  services:
+    scylla-backend:
+      loadBalancer:
+        servers:
+          - url: http://scylla-backend-prod:39100
+        passHostHeader: false
+        serversTransport: passthru@file
+
+    scylla-frontend:
+      loadBalancer:
+        servers:
+          - url: http://scylla-frontend-prod

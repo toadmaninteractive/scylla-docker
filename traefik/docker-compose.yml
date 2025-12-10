@@ -1,0 +1,23 @@
+services:
+  traefik:
+    image: traefik:v3.1
+    container_name: traefik
+    pull_policy: always
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - 443:443
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./conf:/etc/traefik:ro
+      - ./certs:/certs
+    labels:
+      - traefik.enable=true
+    networks:
+      - scylla
+
+networks:
+  scylla:
+    external: true

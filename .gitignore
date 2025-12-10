@@ -1,0 +1,4 @@
+postgres_data/
+scylla_data/
+.env
+config.yaml
