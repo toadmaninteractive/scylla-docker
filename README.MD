@@ -58,7 +58,7 @@ Edit the config.yaml file:
 
 ### 6. Prepare database
 
-Run this command from the `docker` directory to initialize the database (once):
+Run this command from the `scylla-docker` directory to initialize the database (once):
 
 ```bash
 docker compose run \
@@ -70,7 +70,7 @@ docker compose run \
     scylla-backend
 ```
 
-Run this command from the `docker` directory to migrate the database (incremental):
+Run this command from the `scylla-docker` directory to migrate the database (incremental):
 
 ```bash
 docker compose run \
@@ -88,7 +88,7 @@ docker compose run \
 docker compose up -d
 ```
 
-To stop Scylla and related services (except Traefik) run this command from the `docker` directory:
+To stop Scylla and related services (except Traefik) run this command from the `scylla-docker` directory:
 
 ```bash
 docker compose down
