@@ -58,7 +58,15 @@ Edit the config.yaml file:
 
 ### 6. Prepare database
 
-Run this command from the `scylla-docker` directory to initialize the database (once):
+Run these commands from the `scylla-docker` directory.
+
+Start database:
+
+```bash
+docker compose up -d scylla-db
+```
+
+Initialize the database (once):
 
 ```bash
 docker compose run \
@@ -70,7 +78,7 @@ docker compose run \
     scylla-backend
 ```
 
-Run this command from the `scylla-docker` directory to migrate the database (incremental):
+Migrate the database (incremental):
 
 ```bash
 docker compose run \
@@ -80,6 +88,12 @@ docker compose run \
     --rm \
     --entrypoint "bash -c 'cd /migrations && ./graphile-migrate migrate'" \
     scylla-backend
+```
+
+Stop database:
+
+```bash
+docker compose down scylla-db
 ```
 
 ### 7. Run Docker Compose
